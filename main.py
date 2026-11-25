@@ -18,7 +18,7 @@ class UserBase(BaseModel):
     password : str
 
 @app.post("/register")
-def register_endpoint(input_user : UserBase):
+def register_user(input_user : UserBase):
     password = password_hash.hash(input_user.password)
     new_user = {"password" : password, "username" : input_user.username}
     if DB.add_user(new_user):
@@ -27,7 +27,7 @@ def register_endpoint(input_user : UserBase):
         raise HTTPException(status_code=409, detail="Username already exists")
 
 @app.post("/login")
-def login_endpoint(input_user : UserBase):
+def login_user(input_user : UserBase):
     input_username, input_password = input_user.username, input_user.password
     user_from_db : dict = DB.get_user_by_user(input_username)
     if user_from_db is None:
@@ -41,11 +41,6 @@ def login_endpoint(input_user : UserBase):
     token :str = auth.create_token(input_username, user_from_db["id"])
 
     return {"message" : "login successfully", "token" : f"bearer {token}" }
-
-@app.get("/me")
-def get_user(current_user : dict = Depends(auth.get_current_user)):
-    user_data = DB.get_user_by_user(current_user.get("username"))
-    return {"username" : user_data["username"]}
 
 
 
