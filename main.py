@@ -51,4 +51,4 @@ def delete_my_account(current_user : dict = Depends(auth.get_current_user)):
 
     return {"message" : "delete successfully"}
 
-#git add . && git commit -m "update" && git push
+# git add . && git commit -m "update" && git push
